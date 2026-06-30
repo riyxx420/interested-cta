@@ -4,26 +4,42 @@
 <body style="font-family:sans-serif;text-align:center;padding:80px;">
   <h2 id="heading">Thanks for your interest!</h2>
   <button id="confirmBtn" style="background:#2563eb;color:#fff;padding:14px 28px;border:none;border-radius:6px;font-size:16px;cursor:pointer;">
-    Yes, I'm interested
-  </button>
-  <p id="thanksMsg" style="display:none;">Got it — we'll be in touch shortly!</p>
+  Yes, I'm interested
+</button>
+<p id="thanksMsg" style="display:none;">Thanks — we'll be in touch shortly!</p>
+
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    const email = params.get('email');
+  const email = params.get('email');
+  let isSubmitting = false;
 
-    document.getElementById('confirmBtn').addEventListener('click', async () => {
-      try {
-        await fetch('https://script.google.com/macros/s/AKfycbxa7QnlmCus620evFIyvZXdYb_me-QYmhFRmDVU7NAP128XejHLwlGCHAn7YC99fePB/exec', {
-          method: 'POST',
-          body: JSON.stringify({ email: email, source: 'apollo outbound' })
-        });
-        document.getElementById('confirmBtn').style.display = 'none';
-        document.getElementById('thanksMsg').style.display = 'block';
-      } catch (err) {
-        console.error('Submission failed', err);
-      }
-    });
+  document.getElementById('confirmBtn').addEventListener('click', async () => {
+    if (isSubmitting) return; // block double-clicks
+    isSubmitting = true;
+
+    const btn = document.getElementById('confirmBtn');
+    btn.textContent = 'Submitting...';
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.style.cursor = 'not-allowed';
+
+    try {
+      await fetch('YOUR_SCRIPT_URL', {
+        method: 'POST',
+        body: JSON.stringify({ email: email, source: 'apollo outbound' })
+      });
+      btn.style.display = 'none';
+      document.getElementById('thanksMsg').style.display = 'block';
+    } catch (err) {
+      console.error('Submission failed', err);
+      btn.textContent = 'Something went wrong — try again';
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
+      isSubmitting = false;
+    }
+  });  
   </script>
 </body>
 </html>
