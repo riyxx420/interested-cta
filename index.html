@@ -64,7 +64,7 @@
       const email = params.get('email');
 
       try {
-        await fetch('https://script.google.com/macros/s/AKfycbxa7QnlmCus620evFIyvZXdYb_me-QYmhFRmDVU7NAP128XejHLwlGCHAn7YC99fePB/exec', {
+        await fetch('https://script.google.com/macros/s/AKfycbzyq-A3wlCWxnRw5GyvVPTgvwW5A7gEEtipL04CNOpYqQrcoz3eCBIQFMc2fRttBNUNoQ/exec', {
           method: 'POST',
           body: JSON.stringify({ email: email, source: 'apollo outbound' })
         });
