@@ -1,45 +1,80 @@
 <!DOCTYPE html>
 <html>
-<head><title>Interested</title></head>
-<body style="font-family:sans-serif;text-align:center;padding:80px;">
-  <h2 id="heading">Thanks for your interest!</h2>
-  <button id="confirmBtn" style="background:#2563eb;color:#fff;padding:14px 28px;border:none;border-radius:6px;font-size:16px;cursor:pointer;">
-  Yes, I'm interested
-</button>
-<p id="thanksMsg" style="display:none;">Thanks — we'll be in touch shortly!</p>
-
+<head>
+  <title>Thanks for your interest!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 80px 20px;
+      background: #f9f9f9;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 48px 40px;
+      max-width: 480px;
+      margin: 0 auto;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    h2 {
+      color: #111;
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+    p {
+      color: #555;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .spinner {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      border: 3px solid #e0e0e0;
+      border-top-color: #2563eb;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div id="loading">
+      <div class="spinner"></div>
+      <h2>Confirming your interest...</h2>
+    </div>
+    <div id="success" style="display:none;">
+      <h2>You're all set!</h2>
+      <p>Thanks for your interest — we'll be in touch shortly.</p>
+    </div>
+    <div id="error" style="display:none;">
+      <h2>Something went wrong</h2>
+      <p>Please try clicking the link in your email again.</p>
+    </div>
+  </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-  const email = params.get('email');
-  let isSubmitting = false;
+    window.addEventListener('load', async () => {
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get('email');
 
-  document.getElementById('confirmBtn').addEventListener('click', async () => {
-    if (isSubmitting) return; // block double-clicks
-    isSubmitting = true;
-
-    const btn = document.getElementById('confirmBtn');
-    btn.textContent = 'Submitting...';
-    btn.disabled = true;
-    btn.style.opacity = '0.6';
-    btn.style.cursor = 'not-allowed';
-
-    try {
-      await fetch('https://script.google.com/macros/s/AKfycbxa7QnlmCus620evFIyvZXdYb_me-QYmhFRmDVU7NAP128XejHLwlGCHAn7YC99fePB/exec', {
-        method: 'POST',
-        body: JSON.stringify({ email: email, source: 'apollo outbound' })
-      });
-      btn.style.display = 'none';
-      document.getElementById('thanksMsg').style.display = 'block';
-    } catch (err) {
-      console.error('Submission failed', err);
-      btn.textContent = 'Something went wrong — try again';
-      btn.disabled = false;
-      btn.style.opacity = '1';
-      btn.style.cursor = 'pointer';
-      isSubmitting = false;
-    }
-  });  
+      try {
+        await fetch('https://script.google.com/macros/s/AKfycbxa7QnlmCus620evFIyvZXdYb_me-QYmhFRmDVU7NAP128XejHLwlGCHAn7YC99fePB/exec', {
+          method: 'POST',
+          body: JSON.stringify({ email: email, source: 'apollo outbound' })
+        });
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('success').style.display = 'block';
+      } catch (err) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+      }
+    });
   </script>
 </body>
 </html>
