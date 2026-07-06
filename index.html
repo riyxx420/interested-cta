@@ -42,46 +42,80 @@
     }
   </style>
 </head>
-<body>
-  <div class="card">
-    <div id="loading">
-      <div class="spinner"></div>
-      <h2>Confirming your interest...</h2>
-    </div>
-    <div id="success" style="display:none;">
-      <h2>You're all set!</h2>
-      <p>Thanks for your interest — we'll be in touch shortly.</p>
-    </div>
-    <div id="error" style="display:none;">
-      <h2>Something went wrong</h2>
-      <p>Please try clicking the link in your email again.</p>
-    </div>
-  </div>
 
-  <script>
-    window.addEventListener('load', async () => {
-      const params = new URLSearchParams(window.location.search);
+<body>
+
+<div class="card">
+
+<div id="loading">
+<div class="spinner"></div>
+<h2>Confirming your interest...</h2>
+</div>
+
+<div id="success" style="display:none;">
+<h2>You're all set!</h2>
+<p>Thanks for your interest — we'll be in touch shortly.</p>
+</div>
+
+<div id="error" style="display:none;">
+<h2>Something went wrong</h2>
+<p>Please try clicking the link in your email again.</p>
+</div>
+
+</div>
+
+<script>
+
+window.addEventListener('load', async () => {
+
+const params = new URLSearchParams(window.location.search);
+
+const email = params.get('email');
+
+if (!email) {
+  console.log("No email found in URL.");
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('error').style.display = 'block';
+  return;
+}
+
 try {
-  await fetch('https://script.google.com/macros/s/AKfycbzyq-A3wlCWxnRw5GyvVPTgvwW5A7gEEtipL04CNOpYqQrcoz3eCBIQFMc2fRttBNUNoQ/exec', {
-  method: 'POST',
-  headers: {
-            'Content-Type': 'application/json'
-          },
-    body: JSON.stringify({
-    email: params.get('email'),
-    name: params.get('name'),
-    title: params.get('title'),
-    company: params.get('company'),
-    source: 'apollo outbound'
-  })
+
+await fetch('https://script.google.com/macros/s/AKfycbzyq-A3wlCWxnRw5GyvVPTgvwW5A7gEEtipL04CNOpYqQrcoz3eCBIQFMc2fRttBNUNoQ/exec', {
+
+method: 'POST',
+
+headers: {
+'Content-Type': 'application/json'
+},
+
+body: JSON.stringify({
+
+email: email,
+name: params.get('name'),
+title: params.get('title'),
+company: params.get('company'),
+source: 'apollo outbound'
+
+})
+
 });
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('success').style.display = 'block';
-      } catch (err) {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('error').style.display = 'block';
-      }
-    });
-  </script>
+
+document.getElementById('loading').style.display = 'none';
+document.getElementById('success').style.display = 'block';
+
+} catch (err) {
+
+console.error(err);
+
+document.getElementById('loading').style.display = 'none';
+document.getElementById('error').style.display = 'block';
+
+}
+
+});
+
+</script>
+
 </body>
 </html>
